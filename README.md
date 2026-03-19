@@ -57,7 +57,13 @@ Claude 会自动帮你安装需要的工具（Node.js、FFmpeg）。
 
 **如果你选火山引擎**，需要获取一个 API Key：
 
-> 获取指南：https://my.feishu.cn/wiki/Gh0MwxHePidsYfkIx7zcvJQynqc?from=from_copylink
+1. 打开火山引擎控制台：https://console.volcengine.com/speech/new/setting/activate
+2. 点击左侧边栏的 **「开通管理」**
+3. 右侧「服务管理」选择 **「小模型」**
+4. 找到 **「音视频字幕生成」**，点击旁边的 **「开通」**
+5. 开通后，在控制台获取你的 API Key
+
+> 详细图文指南：https://my.feishu.cn/wiki/Gh0MwxHePidsYfkIx7zcvJQynqc?from=from_copylink
 
 **如果你选 Whisper**，Claude 会自动帮你安装，不需要额外操作。
 
@@ -176,7 +182,7 @@ TalkCut 本身完全免费开源。费用取决于你的选择：
 ## 致谢
 
 - **原作**：成峰（公众号「AI 产品自由」）—— 原始项目 [videocut-skills](https://github.com/Ceeon/videocut-skills)
-- **当前版本完善**：Dogtor 大王（小红书）
+- **当前版本完善**：[Dogtor 大王](https://xhslink.com/m/1GxnHJxjrnd)（小红书）
 
 ## License
 
