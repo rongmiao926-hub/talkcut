@@ -14,6 +14,15 @@
 | 说错了重新说 | 识别纠正重说，删掉前面说错的部分 |
 | 中间停顿太久 | 自动检测静音段（≥0.5 秒） |
 
+## 跨平台支持
+
+TalkCut 对 macOS 和 Windows 都做了兼容处理：
+
+- 所有核心脚本（转录、剪辑）均为 Node.js 实现，不依赖 bash/shell
+- FFmpeg 调用自动处理 macOS 与 Windows 的文件路径差异（macOS 文件名可能含冒号，需要 `file:` 前缀；Windows 则不需要）
+- 硬件编码器自动检测：macOS 使用 VideoToolbox，Windows 自动识别 NVENC / QSV / AMF，找不到则回退到软件编码
+- Whisper 本地模型是唯一的例外——它依赖 Apple Silicon 的 MLX 框架，仅限 Mac
+
 ## 在开始之前
 
 你需要准备好这些东西：
@@ -168,7 +177,7 @@ lsof -i :8899
 
 ### Q: 可以在 Windows 上用吗？
 
-可以。选择火山引擎 API 方案即可，它是云端处理，不挑系统。唯一不能用的是 Whisper 本地模型——它依赖 Apple Silicon 的 MLX 框架，仅限 Mac。
+可以。所有核心脚本已改写为 Node.js，在 Windows 上无需安装额外的 bash 环境。选择火山引擎 API 方案即可，它是云端处理，不挑系统。唯一不能用的是 Whisper 本地模型——它依赖 Apple Silicon 的 MLX 框架，仅限 Mac。
 
 ### Q: 免费吗？
 
