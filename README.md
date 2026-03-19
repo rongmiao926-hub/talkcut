@@ -67,8 +67,6 @@ Claude 会自动帮你安装需要的工具（Node.js、FFmpeg）。
 
 **如果你选 Whisper**，Claude 会自动帮你安装，不需要额外操作。
 
-不确定选哪个？如果你用的是 Mac，建议先选 **Whisper**，零成本上手。如果你用的是 Windows 或 Linux，请选 **火山引擎**。
-
 ## 使用方法
 
 ### 剪口播
