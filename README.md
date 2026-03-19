@@ -18,7 +18,7 @@
 
 你需要准备好这些东西：
 
-- **一台 Mac**（目前仅支持 macOS）
+- **一台电脑**（macOS / Windows / Linux 均可）
 - **Claude Code**（Anthropic 的命令行 AI 工具）—— 如果你还没装，先去 [这里安装](https://docs.anthropic.com/en/docs/claude-code/overview)
 - **一段口播视频**（.mp4 / .mov 格式）
 
@@ -52,8 +52,8 @@ Claude 会自动帮你安装需要的工具（Node.js、FFmpeg）。
 
 | 方案 | 优点 | 缺点 |
 |------|------|------|
-| **火山引擎 API** | 速度快，识别准 | 需要注册账号，有 20 小时免费额度 |
-| **Whisper 本地模型** | 完全免费，不需要联网 | 速度较慢，首次下载模型占 1.5GB 磁盘 |
+| **火山引擎 API** | 速度快，识别准，全平台可用 | 需要注册账号，有 20 小时免费额度 |
+| **Whisper 本地模型** | 完全免费，不需要联网 | 速度较慢，首次下载模型占 1.5GB 磁盘，**仅支持 macOS（Apple Silicon）** |
 
 **如果你选火山引擎**，需要获取一个 API Key：
 
@@ -67,7 +67,7 @@ Claude 会自动帮你安装需要的工具（Node.js、FFmpeg）。
 
 **如果你选 Whisper**，Claude 会自动帮你安装，不需要额外操作。
 
-不确定选哪个？建议先选 **Whisper**，零成本上手。等你用得多了再考虑火山引擎。
+不确定选哪个？如果你用的是 Mac，建议先选 **Whisper**，零成本上手。如果你用的是 Windows 或 Linux，请选 **火山引擎**。
 
 ## 使用方法
 
@@ -170,7 +170,7 @@ lsof -i :8899
 
 ### Q: 可以在 Windows 上用吗？
 
-目前仅支持 macOS（因为 Whisper 本地模型使用了 Apple Silicon 优化的 MLX 框架）。如果你选择火山引擎方案，理论上 Windows 也能跑，但尚未测试。
+可以。选择火山引擎 API 方案即可，它是云端处理，不挑系统。唯一不能用的是 Whisper 本地模型——它依赖 Apple Silicon 的 MLX 框架，仅限 Mac。
 
 ### Q: 免费吗？
 
