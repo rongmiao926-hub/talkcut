@@ -129,12 +129,12 @@ Claude 会自动帮你安装需要的工具（Node.js、FFmpeg）。
 ├── 安装/           # 环境安装说明
 ├── 剪口播/         # 核心功能：转录 + AI 分析 + 审核 + 剪辑
 │   ├── scripts/    # 脚本文件
-│   │   ├── volcengine_transcribe.sh   # 火山引擎转录
+│   │   ├── volcengine_transcribe.js   # 火山引擎转录
 │   │   ├── whisper_transcribe.py      # Whisper 本地转录
 │   │   ├── generate_subtitles.js      # 生成字幕数据
 │   │   ├── generate_review.js         # 生成审核网页
 │   │   ├── review_server.js           # 审核服务器
-│   │   └── cut_video.sh               # FFmpeg 剪辑
+│   │   └── cut_video.js               # FFmpeg 剪辑
 │   └── 用户习惯/   # AI 的审核规则（可自定义）
 ├── 字幕/           # 字幕生成功能
 └── 自更新/         # 自我进化机制

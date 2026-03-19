@@ -18,6 +18,11 @@ const { execSync } = require('child_process');
 const PORT = process.argv[2] || 8899;
 let VIDEO_FILE = process.argv[3] || findVideoFile();
 
+// file: 前缀：macOS/Linux 文件名可能含冒号，Windows 不需要
+function fileArg(p) {
+  return process.platform === 'win32' ? p : `file:${p}`;
+}
+
 function findVideoFile() {
   const files = fs.readdirSync('.').filter(f => f.endsWith('.mp4'));
   return files[0] || 'source.mp4';
@@ -60,23 +65,28 @@ const server = http.createServer((req, res) => {
         const baseName = path.basename(VIDEO_FILE, '.mp4');
         const outputFile = `${baseName}_cut.mp4`;
 
-        // 执行剪辑
-        const scriptPath = path.join(__dirname, 'cut_video.sh');
+        // 执行剪辑：优先用 cut_video.js，其次 cut_video.sh，最后内置逻辑
+        const jsScriptPath = path.join(__dirname, 'cut_video.js');
+        const shScriptPath = path.join(__dirname, 'cut_video.sh');
 
-        if (!fs.existsSync(scriptPath)) {
-          // 如果没有 cut_video.sh，用内置的 ffmpeg 命令
-          console.log('🎬 执行剪辑...');
-          executeFFmpegCut(VIDEO_FILE, deleteList, outputFile);
-        } else {
-          console.log('🎬 调用 cut_video.sh...');
-          execSync(`bash "${scriptPath}" "${VIDEO_FILE}" delete_segments.json "${outputFile}"`, {
+        if (fs.existsSync(jsScriptPath)) {
+          console.log('🎬 调用 cut_video.js...');
+          execSync(`node "${jsScriptPath}" "${VIDEO_FILE}" delete_segments.json "${outputFile}"`, {
             stdio: 'inherit'
           });
+        } else if (fs.existsSync(shScriptPath) && process.platform !== 'win32') {
+          console.log('🎬 调用 cut_video.sh...');
+          execSync(`bash "${shScriptPath}" "${VIDEO_FILE}" delete_segments.json "${outputFile}"`, {
+            stdio: 'inherit'
+          });
+        } else {
+          console.log('🎬 执行剪辑...');
+          executeFFmpegCut(VIDEO_FILE, deleteList, outputFile);
         }
 
         // 获取剪辑前后的时长信息
-        const originalDuration = parseFloat(execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "file:${VIDEO_FILE}"`).toString().trim());
-        const newDuration = parseFloat(execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "file:${outputFile}"`).toString().trim());
+        const originalDuration = parseFloat(execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${fileArg(VIDEO_FILE)}"`).toString().trim());
+        const newDuration = parseFloat(execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${fileArg(outputFile)}"`).toString().trim());
         const deletedDuration = originalDuration - newDuration;
         const savedPercent = ((deletedDuration / originalDuration) * 100).toFixed(1);
 
@@ -166,9 +176,11 @@ function detectEncoder() {
   // 检测哪个可用
   for (const enc of encoders) {
     try {
-      execSync(`ffmpeg -hide_banner -encoders 2>/dev/null | grep ${enc.name}`, { stdio: 'pipe' });
-      console.log(`🎯 检测到编码器: ${enc.label}`);
-      return enc;
+      const output = execSync('ffmpeg -hide_banner -encoders', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+      if (output.includes(enc.name)) {
+        console.log(`🎯 检测到编码器: ${enc.label}`);
+        return enc;
+      }
     } catch (e) {
       // 该编码器不可用，继续检测下一个
     }
@@ -208,7 +220,8 @@ function executeFFmpegCut(input, deleteList, output) {
   }
 
   // 获取视频总时长
-  const probeCmd = `ffprobe -v error -show_entries format=duration -of csv=p=0 "file:${input}"`;
+  const probeCmd = `ffprobe -v error -show_entries format=duration -of csv=p=0 "${fileArg(input)}"`;
+
   const duration = parseFloat(execSync(probeCmd).toString().trim());
 
   const bufferSec = BUFFER_MS / 1000;
@@ -280,13 +293,13 @@ function executeFFmpegCut(input, deleteList, output) {
   const encoder = getEncoder();
   console.log(`✂️ 执行 FFmpeg 精确剪辑（${encoder.label}）...`);
 
-  const cmd = `ffmpeg -y -i "file:${input}" -filter_complex "${filterComplex}" -map "[outv]" -map "[outa]" -c:v ${encoder.name} ${encoder.args} -c:a aac -b:a 192k "file:${output}"`;
+  const cmd = `ffmpeg -y -i "${fileArg(input)}" -filter_complex "${filterComplex}" -map "[outv]" -map "[outa]" -c:v ${encoder.name} ${encoder.args} -c:a aac -b:a 192k "${fileArg(output)}"`;
 
   try {
     execSync(cmd, { stdio: 'pipe' });
     console.log(`✅ 输出: ${output}`);
 
-    const newDuration = parseFloat(execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "file:${output}"`).toString().trim());
+    const newDuration = parseFloat(execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${fileArg(output)}"`).toString().trim());
     console.log(`📹 新时长: ${newDuration.toFixed(2)}s`);
   } catch (err) {
     console.error('FFmpeg 执行失败，尝试分段方案...');
@@ -306,7 +319,7 @@ function executeFFmpegCutFallback(input, keepSegments, output) {
       const segDuration = seg.end - seg.start;
 
       const encoder = getEncoder();
-      const cmd = `ffmpeg -y -ss ${seg.start.toFixed(3)} -i "file:${input}" -t ${segDuration.toFixed(3)} -c:v ${encoder.name} ${encoder.args} -c:a aac -b:a 128k -avoid_negative_ts make_zero "${partFile}"`;
+      const cmd = `ffmpeg -y -ss ${seg.start.toFixed(3)} -i "${fileArg(input)}" -t ${segDuration.toFixed(3)} -c:v ${encoder.name} ${encoder.args} -c:a aac -b:a 128k -avoid_negative_ts make_zero "${partFile}"`;
 
       console.log(`切割片段 ${i + 1}/${keepSegments.length}: ${seg.start.toFixed(2)}s - ${seg.end.toFixed(2)}s`);
       execSync(cmd, { stdio: 'pipe' });

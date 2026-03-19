@@ -120,7 +120,7 @@ curl -s -F "files[]=@audio.mp3" https://uguu.se/upload
 # 返回: {"success":true,"files":[{"url":"https://h.uguu.se/xxx.mp3"}]}
 
 # 2. 调用火山引擎 API
-"$SKILL_DIR/scripts/volcengine_transcribe.sh" "https://h.uguu.se/xxx.mp3"
+node "$SKILL_DIR/scripts/volcengine_transcribe.js" "https://h.uguu.se/xxx.mp3"
 # 输出: volcengine_result.json
 
 # 3. 生成字级别字幕

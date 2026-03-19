@@ -15,6 +15,11 @@ const PORT = process.argv[2] || 8898;
 const VIDEO_PATH = process.argv[3] || '';
 const SUBTITLES_FILE = './subtitles_with_time.json';
 
+// file: 前缀：macOS/Linux 文件名可能含冒号，Windows 不需要
+function fileArg(p) {
+  return process.platform === 'win32' ? p : `file:${p}`;
+}
+
 // 读取字幕数据
 let subtitles = [];
 if (fs.existsSync(SUBTITLES_FILE)) {
@@ -93,8 +98,8 @@ const server = http.createServer((req, res) => {
   // API: 获取视频信息（时长+分辨率+帧率，用于预估烧录时间）
   if (req.url === '/api/video-info') {
     try {
-      const dur = parseFloat(execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "file:${VIDEO_PATH}"`).toString().trim());
-      const streamInfo = execSync(`ffprobe -v error -show_entries stream=width,height,r_frame_rate -select_streams v:0 -of csv=p=0 "file:${VIDEO_PATH}"`).toString().trim();
+      const dur = parseFloat(execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${fileArg(VIDEO_PATH)}"`).toString().trim());
+      const streamInfo = execSync(`ffprobe -v error -show_entries stream=width,height,r_frame_rate -select_streams v:0 -of csv=p=0 "${fileArg(VIDEO_PATH)}"`).toString().trim();
       const parts = streamInfo.split(',');
       const width = parseInt(parts[0]) || 1920;
       const height = parseInt(parts[1]) || 1080;
@@ -137,8 +142,8 @@ const server = http.createServer((req, res) => {
         // 获取总帧数（用时长 × 帧率估算，比 -count_frames 快得多）
         let totalFrames = 0;
         try {
-          const dur = parseFloat(execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "file:${VIDEO_PATH}"`).toString().trim());
-          const fpsStr = execSync(`ffprobe -v error -select_streams v:0 -show_entries stream=r_frame_rate -of csv=p=0 "file:${VIDEO_PATH}"`).toString().trim();
+          const dur = parseFloat(execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${fileArg(VIDEO_PATH)}"`).toString().trim());
+          const fpsStr = execSync(`ffprobe -v error -select_streams v:0 -show_entries stream=r_frame_rate -of csv=p=0 "${fileArg(VIDEO_PATH)}"`).toString().trim();
           const fpsParts = fpsStr.split('/');
           const fps = fpsParts.length === 2 ? parseInt(fpsParts[0]) / parseInt(fpsParts[1]) : 30;
           totalFrames = Math.round(dur * fps);
