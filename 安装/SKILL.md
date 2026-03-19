@@ -88,17 +88,9 @@ brew install node ffmpeg
 #### Windows
 
 ```bash
-# 方式一：winget（推荐）
 winget install OpenJS.NodeJS
 winget install Gyan.FFmpeg
-
-# 方式二：手动安装
-# Node.js → https://nodejs.org 下载安装包
-# FFmpeg → https://www.gyan.dev/ffmpeg/builds/ 下载 release full 版本
-#   解压后将 bin 目录添加到系统 PATH 环境变量
 ```
-
-> 如果在沙盒环境（如 Trae）中包管理器被限制，请使用手动安装方式。
 
 #### 验证
 
