@@ -31,7 +31,7 @@
 打开终端（Terminal），复制粘贴下面这行命令，回车：
 
 ```bash
-git clone https://github.com/amiaoo/talkcut.git ~/.claude/skills/videocut
+git clone https://github.com/amiaoo/talkcut-claude-skill.git ~/.claude/skills/videocut
 ```
 
 这会把 TalkCut 下载到 Claude Code 能读取到的位置。
