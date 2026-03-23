@@ -91,7 +91,32 @@
 
 ---
 
-##### 🔧 选项1：手动操作（传统方式）
+##### 🤖 选项1：让 AI 帮你安装（推荐）
+
+**前提条件**：需要先配置 GitHub，详情教程请见
+https://my.feishu.cn/wiki/J1YcwUDXkiYxw2kjcDXcMScJnQe?from=from_copylink
+
+如果你已经配置好 GitHub，可以直接让 AI 帮你搞定：
+
+**告诉 Claude：**
+
+```
+请用 Git 克隆 talkcut-claude-skill 仓库到 ~/.claude/skills/videocut
+```
+
+Claude 会自动：
+- 检查你的 Git 环境
+- 克隆仓库到正确位置
+- 处理所有权限问题
+- 完成后告诉你
+
+> 💡 **推荐**：如果已经配置好 GitHub，这个方法最方便！一句话搞定！
+
+---
+
+##### 🔧 选项2：手动操作（传统方式）
+
+如果你更喜欢自己控制过程：
 
 1. **打开终端**：
    - **Mac**：在启动台搜索"终端"（图标是一个黑色盒子）
@@ -108,29 +133,6 @@
 
 ---
 
-##### 🤖 选项2：让 AI 帮你安装（需提前配置 GitHub）
-
-如果你已经配置好 GitHub，可以直接让 AI 帮你搞定：
-
-**告诉 Claude：**
-
-```
-请用 Git 克隆 talkcut-claude-skill 仓库到 ~/.claude/skills/videocut
-```
-
-Claude 会自动：
-- 检查你的 Git 环境
-- 克隆仓库到正确位置
-- 处理所有权限问题
-- 完成后告诉你
-
-> 🔑 **前提条件**：需要先配置 GitHub，详情教程请见
-> https://my.feishu.cn/wiki/J1YcwUDXkiYxw2kjcDXcMScJnQe?from=from_copylink
-
-> 💡 **推荐**：如果已经配置好 GitHub，这个方法最方便！
-
----
-
 ### 💡 两种方法对比
 
 | 特点 | 方法一（ZIP） | 方法二（Git） |
@@ -139,7 +141,7 @@ Claude 会自动：
 | **更新** | 手动下载新版 | 一条命令更新<br>（AI 可帮你执行） |
 | **网络** | 不需要 Git | 需要 Git 环境 |
 | **AI 帮助** | ✅ AI 帮你处理所有文件位置 | ✅ AI 可帮你执行命令<br>❌ 或手动操作终端 |
-| **推荐** | 🔥 新手首选 | ⚡ 已配 GitHub 的用户 |
+| **推荐** | 🔥 新手首选 | ⚡ 已配 GitHub 的用户<br>🤖 AI 帮助选项优先 |
 
 ---
 
